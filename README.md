@@ -52,7 +52,7 @@ uv pip install -r requirements.txt
 
 #### Option A: Standard Streamlit (for development/testing)
 ```bash
-uv run streamlit run streamlit_app.py
+uv run streamlit run app.py
 ```
 The app will be available at `http://localhost:8501`
 
@@ -73,7 +73,7 @@ asean-diwa/
 ├── requirements.txt
 ├── pyproject.toml          # uv configuration (optional)
 ├── .python-version         # Python version specification
-├── main.py                 # Main Streamlit application
+├── app.py                 # Main Streamlit application
 ├── index.html              # Stlite configuration for deployment
 ├── data/
 │   ├── numerical_indicators.csv
