@@ -19,7 +19,7 @@ st.set_page_config(
 
 # Sidebar navigation
 st.sidebar.title("🌏 ASEAN-DIWA")
-st.sidebar.markdown("Digital Inclusion for Women Advancement in ASEAN")
+st.sidebar.markdown("Digital Innovation for Women Advancement in ASEAN")
 
 st.sidebar.markdown("---")
 
@@ -51,7 +51,7 @@ page = st.session_state.current_page
 if page == "Dashboard":
     st.markdown("""
     <div class="main-header">
-        <h1>ASEAN Digital Inclusion for Women Advancement (DIWA)</h1>
+        <h1>ASEAN Digital Innovation for Women Advancement (DIWA)</h1>
         <p>Bridging the Digital Gender Gap in Southeast Asia</p>
     </div>
     """, unsafe_allow_html=True)
@@ -60,7 +60,7 @@ if page == "Dashboard":
 # ASEAN Map Page
 elif page == "ASEAN Map":
     st.title("🗺️ ASEAN Interactive Map")
-    st.markdown("Explore digital inclusion indicators across ASEAN countries")
+    st.markdown("Explore digital innovation indicators across ASEAN countries")
     
 
 # Country Profiles Page
@@ -72,7 +72,7 @@ elif page == "Country Profiles":
 # Comparison Page
 elif page == "Comparison":
     st.title("📈 Country Comparison")
-    st.markdown("Compare digital inclusion indicators across countries")
+    st.markdown("Compare digital innovation indicators across countries")
     
 
 # About Page
@@ -83,7 +83,7 @@ elif page == "About":
 st.markdown("---")
 st.markdown(
     "<div style='text-align: center; color: #666;'>"
-    "© 2024 ASEAN-DIWA | Digital Inclusion for Women Advancement in ASEAN | "
+    "© 2024 ASEAN-DIWA | Digital Innovation for Women Advancement in ASEAN | "
     "Dashboard v1.0"
     "</div>", 
     unsafe_allow_html=True
