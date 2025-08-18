@@ -16,10 +16,168 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Custom CSS with women-focused color scheme
+st.markdown("""
+<style>
+    .main-header {
+        background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+        padding: 2rem;
+        border-radius: 10px;
+        color: white;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
+    }
+    .metric-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(233, 30, 99, 0.1);
+        text-align: center;
+        border-top: 3px solid #e91e63;
+    }
+    .country-card {
+        background: #fce4ec;
+        padding: 1rem;
+        border-radius: 8px;
+        border-left: 4px solid #e91e63;
+        margin-bottom: 1rem;
+    }
+    .indicator-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(233, 30, 99, 0.05);
+        border-left: 4px solid #f8bbd9;
+    }
+    
+    .story-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 8px rgba(233, 30, 99, 0.1);
+        border-top: 4px solid #e91e63;
+    }
+    
+    .story-meta {
+        color: #ad1457;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .story-title {
+        color: #e91e63;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+    
+    .story-excerpt {
+        color: #666;
+        font-style: italic;
+        margin-bottom: 1rem;
+        padding-left: 1rem;
+        border-left: 3px solid #f8bbd9;
+    }
+    
+    /* Sidebar styling */
+    .css-1d391kg {
+        background-color: #fce4ec;
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        background: linear-gradient(135deg, #e91e63, #ad1457);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        background: linear-gradient(135deg, #ad1457, #880e4f);
+        box-shadow: 0 4px 8px rgba(233, 30, 99, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    /* Selectbox and other input styling */
+    .stSelectbox > div > div {
+        border-color: #e91e63;
+    }
+    
+    /* Metric value styling */
+    [data-testid="metric-container"] {
+        background: linear-gradient(135deg, #fce4ec, #f8bbd9);
+        border: 1px solid #e91e63;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Generate sample data
+
+@st.cache_data
+def load_diwa_data():
+    # Load CSV
+    df = pd.read_csv("data/diwa.csv")
+    
+    # Ensure column names match expected format
+    df.columns = df.columns.str.strip()  # remove extra spaces
+    
+    # Rename columns for consistency with Streamlit app logic
+    df = df.rename(columns={
+        "country": "Country",
+        "year": "Year",
+        "indicator_name": "Indicator",
+        "indicator_value": "Value",
+        "subnational": "Subnational",
+        "remarks": "Remarks",
+        "source": "Source",
+        "source_url": "SourceURL"
+    })
+    
+    # Clean up data types
+    df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
+    df["Value"] = pd.to_numeric(df["Value"], errors="coerce")
+    
+    # Drop rows without a valid year or value
+    df = df.dropna(subset=["Year", "Value"])
+    
+    # Optional: sort for cleaner display
+    df = df.sort_values(by=["Country", "Year", "Indicator"])
+    
+    return df
+
+
+
+# Country coordinates for map
+@st.cache_data
+def get_country_coordinates():
+    return {
+        'Brunei': {'lat': 4.5353, 'lon': 114.7277},
+        'Cambodia': {'lat': 12.5657, 'lon': 104.9910},
+        'Indonesia': {'lat': -0.7893, 'lon': 113.9213},
+        'Laos': {'lat': 19.8563, 'lon': 102.4955},
+        'Malaysia': {'lat': 4.2105, 'lon': 101.9758},
+        'Myanmar': {'lat': 21.9162, 'lon': 95.9560},
+        'Philippines': {'lat': 12.8797, 'lon': 121.7740},
+        'Singapore': {'lat': 1.3521, 'lon': 103.8198},
+        'Thailand': {'lat': 15.8700, 'lon': 100.9925},
+        'Vietnam': {'lat': 14.0583, 'lon': 108.2772},
+        'Papua New Guinea': {'lat': -6.3150, 'lon': 143.9555},
+        'Timor-Leste': {'lat': -8.8742, 'lon': 125.7275}
+    }
+
+# Initialize data
+df = load_diwa_data()
+country_coords = get_country_coordinates()
 
 # Sidebar navigation
 st.sidebar.title("🌏 ASEAN-DIWA")
-st.sidebar.markdown("Digital Innovation for Women Advancement in ASEAN")
+st.sidebar.markdown("Digital Inclusion for Women in ASEAN")
 
 st.sidebar.markdown("---")
 
@@ -41,6 +199,9 @@ if st.sidebar.button("📊 Country Profiles", use_container_width=True):
     
 if st.sidebar.button("📈 Comparison", use_container_width=True):
     st.session_state.current_page = "Comparison"
+
+if st.sidebar.button("📈 Data Stories", use_container_width=True):
+    st.session_state.current_page = "Data Stories"
     
 if st.sidebar.button("ℹ️ About", use_container_width=True):
     st.session_state.current_page = "About"
@@ -51,10 +212,106 @@ page = st.session_state.current_page
 if page == "Dashboard":
     st.markdown("""
     <div class="main-header">
-        <h1>ASEAN Digital Innovation for Women Advancement (DIWA)</h1>
+        <h1>ASEAN Digital Inclusion for Women Alliance (DIWA)</h1>
         <p>Bridging the Digital Gender Gap in Southeast Asia</p>
     </div>
     """, unsafe_allow_html=True)
+    
+    # Project Brief
+    with st.expander("📋 Project Brief", expanded=True):
+        st.markdown("""
+        **ASEAN-DIWA** is a comprehensive initiative aimed at promoting digital inclusion and reducing 
+        the digital gender gap across ASEAN member states and partner countries. Our mission is to:
+        
+        - 📊 **Monitor** digital gender disparities through data-driven insights  
+        - 🎯 **Identify** key areas requiring targeted interventions  
+        - 🤝 **Collaborate** with stakeholders to implement inclusive digital policies  
+        - 📈 **Track** progress towards achieving digital equality
+        
+        This dashboard provides interactive visualizations and country-specific analysis to support 
+        evidence-based decision making for digital inclusion initiatives.
+        """)
+    
+    # Key Metrics Overview
+    st.subheader("📊 Key Indicators Overview")
+    
+    # Filter controls
+    selected_countries = st.multiselect(
+        "Select Countries:",
+        options=df['Country'].unique(),
+        default=df['Country'].unique()[:6]
+    )
+    
+    # Filter data
+    filtered_data = df[df['Country'].isin(selected_countries)]
+    
+    # Compute average per indicator and pick top 8
+    indicator_means = (
+        filtered_data.groupby("Indicator")["Value"]
+        .mean()
+        .sort_values(ascending=False)
+        .head(8)
+    )
+
+    # Create metrics cards (limit to 8 indicators)
+    indicators = filtered_data['Indicator'].unique()[:8]
+    
+    # Create metrics cards
+    # indicators = filtered_data['Indicator'].unique()
+    cols = st.columns(4)
+    for i, indicator in enumerate(indicators):
+        with cols[i % 4]:
+            indicator_data = filtered_data[filtered_data['Indicator'] == indicator]
+            avg_value = indicator_data['Value'].mean()
+            
+            if pd.notna(avg_value):
+                st.markdown(f"""
+                <div class="metric-card">
+                    <h3>{indicator}</h3>
+                    <h2 style="color: #e91e63;">{avg_value:.1f}</h2>
+                    <p>Average across selected countries (all years)</p>
+                </div>
+                """, unsafe_allow_html=True)
+    
+    # Navigation Guide
+    st.subheader("🧭 Explore More")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class="indicator-section">
+            <h4>🗺️ Interactive Map</h4>
+            <p>Explore geographical patterns of digital inclusion across ASEAN countries with our interactive choropleth maps.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("Visit ASEAN Map", key="map_btn"):
+            st.session_state.current_page = "ASEAN Map"
+            st.rerun()
+    
+    with col2:
+        st.markdown("""
+        <div class="indicator-section">
+            <h4>📊 Country Profiles</h4>
+            <p>Dive deep into individual country analysis with detailed breakdowns and downloadable reports.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("View Country Profiles", key="profile_btn"):
+            st.session_state.current_page = "Country Profiles"
+            st.rerun()
+    
+    with col3:
+        st.markdown("""
+        <div class="indicator-section">
+            <h4>📈 Compare Countries</h4>
+            <p>Create side-by-side comparisons between countries with customizable charts and rankings.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if st.button("Compare Countries", key="compare_btn"):
+            st.session_state.current_page = "Comparison"
+            st.rerun()
     
 
 # ASEAN Map Page
