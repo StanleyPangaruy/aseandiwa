@@ -72,7 +72,86 @@ elif page == "Country Profiles":
 # Comparison Page
 elif page == "Comparison":
     st.title("📈 Country Comparison")
-    st.markdown("Compare digital innovation indicators across countries")
+    st.markdown("Compare digital inclusion indicators across countries (all years)")
+
+    # Comparison controls
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        comp_indicator = st.selectbox("Select Indicator:", df['Indicator'].unique())
+
+    with col2:
+        comp_countries = st.multiselect(
+            "Select Countries to Compare:",
+            df['Country'].unique(),
+            default=df['Country'].unique()[:5]
+        )
+    with col3:
+        chart_type = st.selectbox("Chart Type:", ["Bar Chart", "Line Chart"])
+
+    if comp_countries:
+        # Filter data for indicator + countries (no year filter)
+        comp_data = df[
+            (df['Indicator'] == comp_indicator) &
+            (df['Country'].isin(comp_countries))
+        ]
+
+        # Create visualizations
+        if chart_type == "Bar Chart":
+            # Show the most recent year's values for each country
+            latest_years = comp_data.groupby("Country")["Year"].max().reset_index()
+            comp_latest = comp_data.merge(latest_years, on=["Country", "Year"])
+
+            fig = px.bar(
+                comp_latest,
+                x='Country',
+                y='Value',
+                color='Country',
+                title=f'{comp_indicator} (Most Recent Year)',
+            )
+            fig.update_layout(height=500)
+            st.plotly_chart(fig, use_container_width=True)
+
+        elif chart_type == "Line Chart":
+            # Show trends over time
+            fig = px.line(
+                comp_data,
+                x='Year',
+                y='Value',
+                color='Country',
+                title=f'{comp_indicator} Trends Over Time',
+                markers=True,
+                color_discrete_sequence=px.colors.qualitative.Set1
+            )
+            fig.update_layout(height=500)
+            st.plotly_chart(fig, use_container_width=True)
+
+        # Rankings based on most recent year
+        latest_years = comp_data.groupby("Country")["Year"].max().reset_index()
+        comp_latest = comp_data.merge(latest_years, on=["Country", "Year"])
+        comp_latest = comp_latest.sort_values('Value', ascending=False).reset_index(drop=True)
+        comp_latest['Rank'] = comp_latest.index + 1
+
+        st.subheader("🏆 Rankings")
+        st.dataframe(
+            comp_latest[['Rank', 'Country', 'Value']].rename(columns={'Value': f'{comp_indicator}'}),
+            use_container_width=True
+        )
+
+        # Download options
+        st.subheader("📥 Download Options")
+        col1, col2 = st.columns(2)
+        with col1:
+            csv = comp_data.to_csv(index=False)
+            st.download_button(
+                label="📊 Download Full Data (CSV)",
+                data=csv,
+                file_name=f'comparison_{comp_indicator}_all_years.csv',
+                mime='text/csv'
+            )
+
+        with col2:
+            st.info("📈 Chart download functionality would be implemented with additional libraries")
     
 
 # About Page
