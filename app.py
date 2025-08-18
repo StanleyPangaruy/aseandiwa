@@ -317,7 +317,70 @@ if page == "Dashboard":
 # ASEAN Map Page
 elif page == "ASEAN Map":
     st.title("🗺️ ASEAN Interactive Map")
-    st.markdown("Explore digital innovation indicators across ASEAN countries")
+    st.markdown("Explore digital inclusion indicators across ASEAN countries")
+    
+    # Map controls
+    map_indicator = st.selectbox("Select Indicator for Map:", df['Indicator'].unique())
+    
+    # Prepare map data — pick the latest year for each country
+    map_data = df[df['Indicator'] == map_indicator].copy()
+    map_data = map_data.loc[map_data.groupby('Country')['Year'].idxmax()]
+    
+    # Add coordinates
+    map_data['lat'] = map_data['Country'].map(lambda x: country_coords.get(x, {}).get('lat', None))
+    map_data['lon'] = map_data['Country'].map(lambda x: country_coords.get(x, {}).get('lon', None))
+
+    
+    
+    # Create choropleth-style scatter map
+    fig = px.choropleth(
+        map_data,
+        locations="Country",               # Country names in your dataset
+        locationmode="country names",      # Plotly will map them automatically
+        color="Value",                     # Replace with your metric column
+        hover_name="Country",              # Show country name on hover
+        color_continuous_scale="Viridis",  # Color scale
+        projection="natural earth"         # World map projection
+    )
+    
+    fig.update_layout(
+        geo=dict(
+            showcountries=True,
+            showcoastlines=True,
+            showland=True,
+            fitbounds="locations"
+        ),
+        height=600
+    )
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Country comparison section
+    st.subheader("🔄 Quick Country Comparison")
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        country1 = st.selectbox("Select First Country:", map_data['Country'].unique())
+    with col2:
+        country2 = st.selectbox("Select Second Country:", 
+                               [c for c in map_data['Country'].unique() if c != country1])
+    
+    if country1 and country2:
+        comp_data = map_data[map_data['Country'].isin([country1, country2])]
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            val1 = comp_data[comp_data['Country'] == country1]['Value'].iloc[0]
+            st.metric(country1, f"{val1:.1f}")
+        
+        with col2:
+            val2 = comp_data[comp_data['Country'] == country2]['Value'].iloc[0]
+            diff = val2 - val1
+            st.metric(country2, f"{val2:.1f}", f"{diff:+.1f}")
+        
+        with col3:
+            st.markdown(f"**Gap:** {abs(diff):.1f} percentage points")
     
 
 # Country Profiles Page
