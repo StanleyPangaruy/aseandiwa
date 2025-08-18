@@ -74,6 +74,9 @@ elif page == "Comparison":
     st.title("📈 Country Comparison")
     st.markdown("Compare digital innovation indicators across countries")
 
+
+    
+
 elif page == "Data Stories":
     st.title("📖 Data Stories")
     st.markdown("Insights and analysis through data-driven narratives")
