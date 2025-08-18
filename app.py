@@ -570,6 +570,10 @@ elif page == "Comparison":
             st.info("📈 Chart download functionality would be implemented with additional libraries")
     
 
+elif page == "Data Stories":
+    st.title("📖 Data Stories")
+    st.markdown("Insights and analysis through data-driven narratives")
+
 # About Page
 elif page == "About":
     st.title("ℹ️ About ASEAN-DIWA")
