@@ -267,7 +267,7 @@ if page == "Dashboard":
     selected_countries = st.multiselect(
         "Select Countries:",
         options=df['Country'].unique(),
-        default=df['Country'].unique()[:6]
+        default=df['Country'].unique()[:12]
     )
     
     # Filter data
