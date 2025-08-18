@@ -781,6 +781,75 @@ elif page == "Data Stories":
 # About Page
 elif page == "About":
     st.title("ℹ️ About ASEAN-DIWA")
+    
+    st.markdown("""
+    ## 🌟 Mission
+    
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    
+    ## 🎯 Objectives
+    
+    - Lorem ipsum dolor sit amet, consectetur adipiscing elit  
+    - Ut enim ad minim veniam, quis nostrud exercitation  
+    - Duis aute irure dolor in reprehenderit in voluptate  
+    - Excepteur sint occaecat cupidatat non proident  
+    
+    ## 📊 Key Indicators
+    
+    1. Lorem ipsum dolor sit amet  
+    2. Consectetur adipiscing elit  
+    3. Sed do eiusmod tempor  
+    4. Ut labore et dolore magna  
+    5. Minim veniam quis nostrud  
+    6. Exercitation ullamco laboris  
+    
+    ## 🌍 Geographic Coverage
+    
+    - Brunei, Cambodia, Indonesia, Laos, Malaysia, Myanmar, Philippines, Singapore, Thailand, Vietnam  
+    - Plus partner countries: Papua New Guinea, Timor-Leste  
+    
+    ## 📈 Data Sources
+    
+    *Note: Currently using placeholder/demo data.*  
+    
+    - Lorem ipsum dolor sit amet  
+    - Consectetur adipiscing elit  
+    - Sed do eiusmod tempor incididunt ut labore  
+    - Et dolore magna aliqua  
+    
+    ## 🤝 Partners
+    
+    - Lorem ipsum dolor sit amet  
+    - Consectetur adipiscing elit  
+    - Sed do eiusmod tempor  
+    
+    ## 📞 Contact
+    
+    - Email: lorem@ipsum.org  
+    - Website: www.loremipsum.org  
+    
+    ---
+    
+    *This dashboard is a prototype. Lorem ipsum dolor sit amet, consectetur adipiscing elit.*
+    """)
+    
+    # Technical information
+    with st.expander("🔧 Technical Information"):
+        st.markdown("""
+        **Dashboard Features:**
+        - Lorem ipsum dolor sit amet  
+        - Consectetur adipiscing elit  
+        - Sed do eiusmod tempor incididunt  
+        
+        **Built with:**
+        - Lorem ipsum dolor sit amet  
+        - Consectetur adipiscing elit  
+        - Sed do eiusmod tempor incididunt  
+        
+        **Browser Compatibility:**
+        - Chrome, Firefox, Safari, Edge  
+        """)
 
 # Footer
 st.markdown("---")
